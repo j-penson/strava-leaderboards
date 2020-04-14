@@ -1,0 +1,41 @@
+{
+  "name": "Mott St hc",
+  "activity_type": "Ride",
+  "distance": 987.86,
+  "average_grade": 6.7,
+  "maximum_grade": 16.0,
+  "elevation_high": 144.6,
+  "elevation_low": 78.0,
+  "start_latlng": "51.661052936688066,0.01378093846142292",
+  "end_latlng": "51.661503966897726,0.02664397470653057",
+  "start_latitude": 51.661052936688066,
+  "end_latitude": 51.661503966897726,
+  "start_longitude": 0.01378093846142292,
+  "end_longitude": 0.02664397470653057,
+  "climb_category": 0,
+  "city": "Waltham Abbey",
+  "state": "Greater London",
+  "country": "United Kingdom",
+  "private": false,
+  "starred": false,
+  "athlete_segment_stats": {
+    "effort_count": 5,
+    "pr_elapsed_time": "0:03:19",
+    "pr_date": "2020-04-02"
+  },
+  "created_at": "2011-11-17T01:10:51+00:00",
+  "updated_at": "2020-04-13T08:24:51+00:00",
+  "total_elevation_gain": 66.8,
+  "map": {
+    "id": "s829134",
+    "polyline": "q`izHcuAAuAIq@Um@gAaCSq@EYIkBO{AMgDSi@e@w@Q[u@cCS_AKaAOiBCy@B{ALw@Zy@f@{@Pg@Fi@Ae@TgBLc@j@yAl@}CV_D?g@HgDCw@AaA",
+    "summary_polyline": null
+  },
+  "effort_count": 80042,
+  "athlete_count": 10737,
+  "hazardous": false,
+  "star_count": 326,
+  "pr_time": null,
+  "starred_date": null,
+  "athlete_pr_effort": null
+}
