@@ -25,6 +25,7 @@ jobs:
         run: |
            gcloud components install beta && \
            gcloud beta functions deploy strava-extract-function --quiet \
+              --project=${{ secrets.GCP_PROJECT }} \
               --entry-point=get_strava_data \
               --region=europe-west2 \
               --memory=256m \
