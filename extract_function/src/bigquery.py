@@ -9,6 +9,8 @@ import os
 
 def write_df(df, table):
     """Write a dataframe to a table in append mode."""
+    print(df.head())
+    print(df.dtypes)
     df.to_gbq(table,
               project_id=os.environ['GCP_PROJECT'],
               if_exists='append')

@@ -1,8 +1,10 @@
 name: Google Cloud Function Deployment
-on:
-  push:
-    branches:
-      - 'master'
+#on:
+#  push:
+#    branches:
+#      - 'master'
+
+on: [push]
 
 jobs:
   setup-build-publish-deploy:
@@ -21,7 +23,8 @@ jobs:
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
         run: |
-           gcloud functions deploy strava-extract-function --quiet \
+           gcloud components install beta && \
+           gcloud beta functions deploy strava-extract-function --quiet \
               --entry-point=get_strava_data \
               --region=europe-west2 \
               --memory=256m \
