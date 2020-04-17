@@ -50,10 +50,10 @@ class GenerateGrid:
                 for i_lon, lon in enumerate(lon_range):
                     # At the highest longitude, move to the next latitude
                     if i_lon < lon_step - 1:
-                        grid.append({'SW_lat': lat,
-                                     'SW_lon': lon,
-                                     'NE_lat': lat_range[i_lat + 1],
-                                     'NE_lon': lon_range[i_lon + 1],
+                        grid.append({'sw_lat': lat,
+                                     'sw_lon': lon,
+                                     'ne_lat': lat_range[i_lat + 1],
+                                     'ne_lon': lon_range[i_lon + 1],
                                      'activity': self.activity})
 
         print(f'Generated a grid with {len(grid)} points.')

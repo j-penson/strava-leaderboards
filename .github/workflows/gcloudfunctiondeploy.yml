@@ -1,0 +1,32 @@
+name: Google Cloud Function Deployment
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      # Setup gcloud CLI
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '270.0.0'
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+
+      # Deploy the Docker image to the GKE cluster
+      - name: Deploy
+        run: |
+           gcloud functions deploy strava-extract-function --quiet \
+              --entry-point=get_strava_data \
+              --region=europe-west2 \
+              --memory=256m \
+              --source=extract_function \
+              --trigger-topic=dev-function-test \
+              --set-env-vars=STRAVA_BUCKET_NAME="strava-leaderboard",STRAVA_API_KEY="${{ secrets.STRAVA_API }}",SUB_ID="dev" \
+              --max-instances=1 \
+              --runtime=python37
