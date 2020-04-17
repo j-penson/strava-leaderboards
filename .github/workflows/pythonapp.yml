@@ -24,7 +24,7 @@ jobs:
           pip install -r requirements.txt
           pip install tensorflow==1.15.0
       - name: flake8 style enforcement
-        run: flake8 --max-line-length=160 --docstring-convention=numpy app/ main.py test/
+        run: flake8 --max-line-length=160 --docstring-convention=numpy extract_function/
       - name: bandit security linting
         run: bandit main.py
       - name: unit tests
