@@ -4,3 +4,4 @@ google-cloud-pubsub==1.4.3
 google-cloud-storage==1.27.0
 pandas==1.0.3
 pandas-gbq==0.13.1
+stravalib==0.10.2

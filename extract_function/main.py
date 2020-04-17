@@ -4,7 +4,6 @@
     JP/MD at 02/01/20
 """
 import base64
-import os
 
 from src import pubsub_messages
 from src import strava_api
@@ -16,10 +15,6 @@ def get_strava_data(event, context):
     """Triggered from a message on a Cloud Pub/Sub topic."""
     pubsub_message = base64.b64decode(event['data']).decode('utf-8')
     print(pubsub_message)
-    print(os.environ['GCP_PROJECT'])
-    print(os.environ['STRAVA_BUCKET_NAME'])
-    print(os.environ['STRAVA_API_KEY'])
-    print(os.environ['SUB_ID'])
     for _ in range(9):
         ack_id, message_data = pubsub_messages.get_message()
 

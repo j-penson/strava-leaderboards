@@ -14,12 +14,21 @@ subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(project_id, sub_id)
 
 
+class NoMessages(Exception):
+    """Custom exception to raise when there aren't any messages to process."""
+
+    pass
+
+
 def get_message():
     """Get a single message from the PubSub Queue."""
     message_response = subscriber.pull(subscription_path, max_messages=1)
+    if len(message_response.received_messages) == 0:
+        raise NoMessages
+
     received_message = message_response.received_messages[0]
     message_data = json.loads(received_message.message.data)
-    print(message_data)
+    print(f'got message {message_data}')
     return received_message.ack_id, message_data
 
 
