@@ -29,7 +29,7 @@ def get_filename(activity_type: str, coordinates: list, grid: bool, lat_steps=No
     return filename
 
 
-def get_strava_data(activity_type, sw_lat, sw_lon, ne_lat, ne_lon):
+def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity):
     """Get segment and leaderboard data for a set of coordinates."""
     coordinates = [sw_lat, sw_lon, ne_lat, ne_lon]
 
@@ -41,9 +41,9 @@ def get_strava_data(activity_type, sw_lat, sw_lon, ne_lat, ne_lon):
     client = Client(access_token=os.environ["STRAVA_API_KEY"])
 
     # TODO refactor this it shouldn't live here
-    filename = get_filename(activity_type, coordinates, grid=False)
+    filename = get_filename(activity, coordinates, grid=False)
 
-    segments = client.explore_segments(bounds=coordinates, activity_type=activity_type)
+    segments = client.explore_segments(bounds=coordinates, activity_type=activity)
     print(f'got {len(segments)} segments')
 
     segments_list = [segment_item.segment.to_dict() for segment_item in segments]
