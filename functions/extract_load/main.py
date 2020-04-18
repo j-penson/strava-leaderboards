@@ -20,15 +20,13 @@ def get_strava_data(event, context):
         data = doc.to_dict()
         api_key = data['access_token']
 
-        # Attempt to get 4 segments and the corresponding leaderboard (100 requests per 15 mins, 21 calls per request)
-        for _ in range(1):
-            ack_id, message_data = pubsub_messages.get_message()
+        ack_id, message_data = pubsub_messages.get_message()
 
-            segments_list, leaderboard_list, filename = strava_api.get_strava_data(**message_data, api_key=api_key)
+        segments_list, leaderboard_list, filename = strava_api.get_strava_data(**message_data, api_key=api_key)
 
-            write_to_storage.upload_blob_from_string(data=segments_list, filename=filename, file_type='segments')
-            write_to_storage.upload_blob_from_string(data=leaderboard_list, filename=filename, file_type='leaderboard')
+        write_to_storage.upload_blob_from_string(data=segments_list, filename=filename, file_type='segments')
+        write_to_storage.upload_blob_from_string(data=leaderboard_list, filename=filename, file_type='leaderboard')
 
-            bigquery.write_to_bq(segments_list, leaderboard_list)
+        bigquery.write_to_bq(segments_list, leaderboard_list)
 
-            pubsub_messages.ack_message(ack_id)
+        pubsub_messages.ack_message(ack_id)
