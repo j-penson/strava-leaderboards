@@ -38,14 +38,13 @@ jobs:
       # Deploy the function to Google Cloud Functions
       - name: Deploy Strava function
         run: |
-           gcloud functions deploy strava-extract-function --quiet \
+           gcloud functions deploy strava-key --quiet \
               --project=${{ secrets.GCP_PROJECT }} \
-              --entry-point=get_strava_data \
+              --entry-point=refresh_key \
               --region=europe-west2 \
-              --memory=256m \
-              --timeout=540 \
-              --source=functions/extract_load \
-              --trigger-topic=dev-function-test \
-              --set-env-vars=STRAVA_BUCKET_NAME="strava-leaderboard",SUB_ID="dev" \
+              --memory=128m \
+              --timeout=60 \
+              --source=functions/strava_key \
+              --trigger-topic=strava-key-update \
               --max-instances=1 \
               --runtime=python37
