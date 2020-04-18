@@ -36,11 +36,9 @@ def write_df(df, table):
 def write_to_bq(segments_list, leaderboard_list):
     """Write segments and the leaderboard to BigQuery."""
     df_segment = pd.DataFrame(segments_list)
-    print(df_segment.columns)
     df_segment = df_segment.astype(SEGMENT_DTYPES)
     write_df(df=df_segment, table='staging.segments')
 
     df_leaderboard = pd.DataFrame(leaderboard_list)
-    print(df_leaderboard.columns)
     df_leaderboard = df_leaderboard.astype(LEADERBOARD_DTYPES)
     write_df(df=df_leaderboard, table='staging.leaderboard')
