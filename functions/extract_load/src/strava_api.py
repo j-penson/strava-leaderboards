@@ -52,6 +52,7 @@ def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
     print(f'got {len(segments)} segments')
 
     if len(segments) == 0:
+        print("no segments found")
         raise NoSegmentsFound
 
     segments_list = [segment_item.segment.to_dict() for segment_item in segments]

@@ -23,9 +23,11 @@ def refresh_key(event, context):
         data = doc.to_dict()
         print(f'got key {doc.id}')
 
-        print(f'checking if expiry time {data["expires_at"]} is creater than current {time.time()}')
         if time.time() < data['expires_at']:
+            print(f'expiry time {data["expires_at"]} not greater than current {time.time()}')
             continue
+        else:
+            print(f'expiry time {data["expires_at"]} greater than current so getting a new access token')
 
         request_params = {'client_id': data['client_id'],
                           "client_secret": data['client_secret'],
