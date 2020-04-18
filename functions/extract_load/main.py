@@ -15,7 +15,6 @@ collection = db.collection('strava')
 
 def get_strava_data(event, context):
     """Triggered from a message on a Cloud Pub/Sub topic."""
-
     # For each API key in the database
     for doc in collection.stream():
         data = doc.to_dict()
