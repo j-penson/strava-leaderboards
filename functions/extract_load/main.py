@@ -1,7 +1,7 @@
 """Strava API collector function.
 
 :authors
-    JP/MD at 02/01/20
+    JP at 17/04/20
 """
 from src import pubsub_messages
 from src import strava_api
@@ -11,8 +11,8 @@ from src import bigquery
 
 def get_strava_data(event, context):
     """Triggered from a message on a Cloud Pub/Sub topic."""
-    # Attempte to get 9 segments and the corresponding leaderboard (100 requests per 15 mins, 11 calls per request)
-    for _ in range(9):
+    # Attempt to get 4 segments and the corresponding leaderboard (100 requests per 15 mins, 21 calls per request)
+    for _ in range(4):
         ack_id, message_data = pubsub_messages.get_message()
 
         segments_list, leaderboard_list, filename = strava_api.get_strava_data(**message_data)

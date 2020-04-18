@@ -23,7 +23,7 @@ jobs:
 #          pip install bandit
 #          pip install -r requirements.txt
       - name: flake8 style enforcement
-        run: flake8 --max-line-length=160 --docstring-convention=numpy extract_function/ create_grid/
+        run: flake8 --max-line-length=160 --docstring-convention=numpy functions/
 #      - name: bandit security linting
 #        run: bandit main.py
 #      - name: unit tests
