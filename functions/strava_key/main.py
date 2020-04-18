@@ -41,8 +41,10 @@ def refresh_key(event, context):
 
         response_dict = response.json()
 
-        doc.set({'access_token': response_dict['access_token'],
-                 'refresh_token': response_dict['refresh_token'],
-                 'expires_at': response_dict['expires_at']})
+        update_doc = collection.document(doc.id)
+
+        update_doc.update({'access_token': response_dict['access_token'],
+                           'refresh_token': response_dict['refresh_token'],
+                           'expires_at': response_dict['expires_at']})
 
         print(f'updated {doc.id} with new expiry time {response_dict["expires_at"]}')
