@@ -18,8 +18,7 @@ class RefreshTokenBadRequest(Exception):
 
 
 def refresh_key(event, context):
-    """Triggered from a message on a Cloud Pub/Sub topic. Update Strava keys stored in Firestore"""
-
+    """Triggered from a message on a Cloud Pub/Sub topic. Update Strava keys stored in Firestore."""
     for doc in collection.stream():
         data = doc.to_dict()
         print(f'got key {doc.id}')
@@ -35,7 +34,7 @@ def refresh_key(event, context):
 
         response = requests.post("https://www.strava.com/api/v3/oauth/token", params=request_params)
 
-        print(f'made request to Strava and got response code {reponse.status_code}')
+        print(f'made request to Strava and got response code {response.status_code}')
 
         if response.status_code != 200:
             raise RefreshTokenBadRequest

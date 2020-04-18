@@ -4,7 +4,6 @@
     JP at 17/04/20
 """
 
-import os
 from stravalib.client import Client
 
 

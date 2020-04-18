@@ -9,12 +9,12 @@ from src import strava_api
 from src import write_to_storage
 from src import bigquery
 
+db = firestore.Client()
+collection = db.collection('strava')
+
 
 def get_strava_data(event, context):
     """Triggered from a message on a Cloud Pub/Sub topic."""
-
-    db = firestore.Client()
-    collection = db.collection('strava')
 
     # For each API key in the database
     for doc in collection.stream():
