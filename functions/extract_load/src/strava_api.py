@@ -83,7 +83,7 @@ def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
     segments_list = [segment_item.segment.to_dict() for segment_item in segments]
     print(f'segments are {segments_list}')
 
-    leaderboard_list = [segment_item.segment.leaderboard.to_dict() for segment_item in segments]
+    leaderboard_list = get_leaderboard_data(segments)
     print(f'leaderboard for segments are {leaderboard_list}')
 
     return segments_list, leaderboard_list, filename
