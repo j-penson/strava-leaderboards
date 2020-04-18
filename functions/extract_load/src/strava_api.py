@@ -34,6 +34,31 @@ def get_filename(activity_type: str, coordinates: list, grid: bool, lat_steps=No
     return filename
 
 
+def get_leaderboard_data(segments):
+    """Get and expand leaderboard data."""
+    leaderboard_list = []
+
+    for segment_item in segments:
+
+        segemnt_dict = segment_item.segment.to_dict()
+        leaderboard_dict = segment_item.segment.leaderboard.to_dict()
+
+        # For each entry get the segment information (name, type, distance, coords) and the leaderboard details
+        for leader_entry in leaderboard_dict['entries']:
+            leader_entry['segment_name'] = segemnt_dict['name']
+            leader_entry['segment_activity_type'] = segemnt_dict['activity_type']
+            leader_entry['segment_distance'] = segemnt_dict['distance']
+            leader_entry['segment_start_latlng'] = segemnt_dict['start_latlng']
+            leader_entry['segment_end_latlng'] = segemnt_dict['end_latlng']
+            leader_entry['entry_count'] = leaderboard_dict['entry_count']
+            leader_entry['effort_count'] = leaderboard_dict['effort_count']
+            leader_entry['kom_type'] = leaderboard_dict['kom_type']
+
+            leaderboard_list.append(leader_entry)
+
+    return leaderboard_list
+
+
 def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
     """Get segment and leaderboard data for a set of coordinates."""
     coordinates = [sw_lat, sw_lon, ne_lat, ne_lon]

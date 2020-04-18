@@ -14,7 +14,7 @@ The core of the data model I'm looking to create is as follows:
 - Segment information 
 - Locations - coordinates
 
-This can then be joined to other information, such as weather data, bike information.
+This can then be joined to other information, such as weather data for analysis.
 
 ## Strava API
 
@@ -22,26 +22,25 @@ I'm going to use the API segment explorer to get a list of segments in the area:
 
 Then the leaderboard for that segment: http://developers.strava.com/docs/reference/#api-Segments-getLeaderboardBySegmentId
 
-Strava limit API requests 100 requests every minute, 1000 daily, which means I should be able to collect 
+Strava limit API requests 100 requests every minute, 1000 daily, which means I should be able to collect a nice amount of data to analyse.
 
-Ther's a handy Python client for the Strava API: https://github.com/hozn/stravalib
+There's a handy Python client for the Strava API: https://github.com/hozn/stravalib
 
 ## Data Pipeline
 
-1. Generate grid, push to pub/sub
-2. Pull 100 messages from the queue, get the 
-    - Write to storage how should this be partitioned?
-    - Transform and write to BigQuery
+1. Take a grid of coordinates, and split it into smaller parts (e.g. 100 by 50). Push the coorindates to pub/sub.
+2. Deploy a Google Cloud function to pull messages from the queue, call the API
+3. Write to json files in Google Cloud Storage, and a staging 
+
 
 ## Infrastructure/Tooling
 As I mainly use GCP at work, so I'll use it for this project. To keep costs down I'm planning on using serverless tools where possible.
 
-- Cloud Storage to keep copies of the raw segment data
-- Secret manager for storing API keys etc
-- Run/Functions for executing jobs
-- Pub/sub for queues (maybe) 
-- Cloud Scheduler for orchestrating jobs
 - BigQuery for target storage/analysis
+- Cloud Functions for extracting the data
+- Cloud Storage to keep copies of the raw segment data
+- Pub/sub for a queue of all the points to calculate
+- Cloud Scheduler for orchestrating jobs
 - Github Actions for CI
 
 If cost was less important, I'd consider using Cloud Composer (managed Airflow) The tooling I've chosen should scale well, but if the volume of data increased by a few orders of magnitude then I'd look to Dataflow (Apache Beam)
