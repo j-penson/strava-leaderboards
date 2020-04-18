@@ -20,7 +20,7 @@ jobs:
           version: '270.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
 
-      # Deploy the Docker image to the GKE cluster
+      # Deploy the function to Google Cloud Functions
       - name: Deploy
         run: |
            gcloud functions deploy strava-extract-function --quiet \
