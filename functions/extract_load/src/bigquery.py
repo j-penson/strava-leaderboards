@@ -20,5 +20,5 @@ def write_to_bq(segments_list, leaderboard_list):
     df_segment = pd.DataFrame(segments_list)
     df_leaderboard = pd.DataFrame(leaderboard_list)
 
-    write_df(df=df_segment, table='dev.dev_segments')
-    write_df(df=df_leaderboard, table='dev.dev_leaderboard')
+    write_df(df=df_segment, table='staging.segments')
+    write_df(df=df_leaderboard, table='staging.leaderboard')

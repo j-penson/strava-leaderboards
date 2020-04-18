@@ -7,8 +7,8 @@ name: Google Cloud Function Deployment
 on: [push]
 
 jobs:
-  setup-build-publish-deploy:
-    name: Setup, Build, Publish, and Deploy
+  deploy-function:
+    name: Deploy GCP Cloud Functions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,7 +21,22 @@ jobs:
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
 
       # Deploy the function to Google Cloud Functions
-      - name: Deploy
+      - name: Deploy extract function
+        run: |
+           gcloud functions deploy strava-extract-function --quiet \
+              --project=${{ secrets.GCP_PROJECT }} \
+              --entry-point=get_strava_data \
+              --region=europe-west2 \
+              --memory=256m \
+              --timeout=540 \
+              --source=functions/extract_load \
+              --trigger-topic=dev-function-test \
+              --set-env-vars=STRAVA_BUCKET_NAME="strava-leaderboard",SUB_ID="dev" \
+              --max-instances=1 \
+              --runtime=python37
+
+      # Deploy the function to Google Cloud Functions
+      - name: Deploy Strava function
         run: |
            gcloud functions deploy strava-extract-function --quiet \
               --project=${{ secrets.GCP_PROJECT }} \
