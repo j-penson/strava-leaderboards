@@ -13,6 +13,12 @@ class DodgyCoordinates(Exception):
     pass
 
 
+class NoSegmentsFound(Exception):
+    """Exception when Strava doesn't find anything."""
+
+    pass
+
+
 def get_filename(activity_type: str, coordinates: list, grid: bool, lat_steps=None, lon_steps=None):
     """Build the filename to be written to storage."""
     filename = f'{activity_type}'
@@ -44,6 +50,9 @@ def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
 
     segments = client.explore_segments(bounds=coordinates, activity_type=activity)
     print(f'got {len(segments)} segments')
+
+    if len(segments) == 0:
+        raise NoSegmentsFound
 
     segments_list = [segment_item.segment.to_dict() for segment_item in segments]
     print(f'segments are {segments_list}')
