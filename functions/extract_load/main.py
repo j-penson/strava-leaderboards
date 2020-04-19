@@ -50,7 +50,7 @@ def get_strava_data(event, context):
             # If no segments have been found for those coordinates, still acknowledge the message
             except strava_api.RateLimitExceeded:
                 logging.warning(f'rate limit exceeded for {doc.id}')
-                break
+                api_call_count = 40
 
             except strava_api.NoSegmentsFound:
                 api_call_count += 1
