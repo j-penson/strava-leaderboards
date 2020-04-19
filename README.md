@@ -28,13 +28,21 @@ There's a handy Python client for the Strava API: https://github.com/hozn/strava
 
 ## Data Pipeline
 
-1. Take a grid of coordinates, and split it into smaller parts (e.g. 100 by 50). Push the coorindates to pub/sub.
-2. Deploy a Google Cloud function to pull messages from the queue, call the API
-3. Write to json files in Google Cloud Storage, and a staging 
-
+1. `scripts/create_grid`: split a set of coordinates into a grid of (e.g. 100 lateral points by 50 longintudinal points). Push the coorindates to pub/sub.
+2. `functions/extract_load`: a Google Cloud Function to get the data from strava
+    - Get a message from the pub/sub topic with a set of coordinates to search
+    - Call the [segment explorer](https://developers.strava.com/docs/reference/#api-Segments-exploreSegments) API to get the 10 most popular segments in that area
+    - For each segment, get the [segment information](https://developers.strava.com/docs/reference/#api-Segments-getSegmentById)
+    - For each segment, get the [leaderboard information](https://developers.strava.com/docs/reference/#api-Segments-getLeaderboardBySegmentId)
+    - Write the raw JSON files to Google Cloud Storage
+    - Load the data into staging tables in Google BigQuery
+3. `functions/strava_key`: a Google Cloud Function to update the Strava access token that expires every 6 hours
+4. `scripts/analysis_tables_create`: create the analysis tables in BigQuery
+5. `scripts/analysis_tables_load`: load from the staging tables to the analysis tables in BigQuery
+ 
 
 ## Infrastructure/Tooling
-As I mainly use GCP at work, so I'll use it for this project. To keep costs down I'm planning on using serverless tools where possible.
+GCP is decent for data tooling, I'm using it extensively in this project. 
 
 - BigQuery for target storage/analysis
 - Cloud Functions for extracting the data
