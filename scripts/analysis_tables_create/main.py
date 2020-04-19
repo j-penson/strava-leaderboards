@@ -1,4 +1,4 @@
-"""Create analytics tables in BigQuery
+"""Create analytics tables in BigQuery.
 
 :authors
     JP at 19/04/20
@@ -11,7 +11,7 @@ client = bigquery.Client()
 
 
 def execute_query(sql_query):
-    """Execute a Bigquery statement"""
+    """Execute a Bigquery statement."""
     print(f'Executing {sql_query}')
     query_job = client.query(sql_query)
     # Wait for execution
