@@ -28,7 +28,7 @@ jobs:
               --entry-point=get_strava_data \
               --region=europe-west2 \
               --memory=256m \
-              --timeout=540 \
+              --timeout=180 \
               --source=functions/extract_load \
               --trigger-topic=dev-function-test \
               --set-env-vars=STRAVA_BUCKET_NAME="strava-leaderboard",SUB_ID="dev" \
