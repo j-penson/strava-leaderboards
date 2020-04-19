@@ -14,7 +14,7 @@ The core of the data model I'm looking to create is as follows:
 - Segment information 
 - Locations - coordinates
 
-This can then be joined to other information, such as weather data, bike information.
+This can then be joined to other information, such as weather data for analysis.
 
 ## Strava API
 
@@ -22,26 +22,33 @@ I'm going to use the API segment explorer to get a list of segments in the area:
 
 Then the leaderboard for that segment: http://developers.strava.com/docs/reference/#api-Segments-getLeaderboardBySegmentId
 
-Strava limit API requests 100 requests every minute, 1000 daily, which means I should be able to collect 
+Strava limit API requests 100 requests every minute, 1000 daily, which means I should be able to collect a nice amount of data to analyse.
 
-Ther's a handy Python client for the Strava API: https://github.com/hozn/stravalib
+There's a handy Python client for the Strava API: https://github.com/hozn/stravalib
 
 ## Data Pipeline
 
-1. Generate grid, push to pub/sub
-2. Pull 100 messages from the queue, get the 
-    - Write to storage how should this be partitioned?
-    - Transform and write to BigQuery
+1. `scripts/create_grid`: split a set of coordinates into a grid of (e.g. 100 lateral points by 50 longintudinal points). Push the coorindates to pub/sub.
+2. `functions/extract_load`: a Google Cloud Function to get the data from strava
+    - Get a message from the pub/sub topic with a set of coordinates to search
+    - Call the [segment explorer](https://developers.strava.com/docs/reference/#api-Segments-exploreSegments) API to get the 10 most popular segments in that area
+    - For each segment, get the [segment information](https://developers.strava.com/docs/reference/#api-Segments-getSegmentById)
+    - For each segment, get the [leaderboard information](https://developers.strava.com/docs/reference/#api-Segments-getLeaderboardBySegmentId)
+    - Write the raw JSON files to Google Cloud Storage
+    - Load the data into staging tables in Google BigQuery
+3. `functions/strava_key`: a Google Cloud Function to update the Strava access token that expires every 6 hours
+4. `scripts/analysis_tables_create`: create the analysis tables in BigQuery
+5. `scripts/analysis_tables_load`: load from the staging tables to the analysis tables in BigQuery
+ 
 
 ## Infrastructure/Tooling
-As I mainly use GCP at work, so I'll use it for this project. To keep costs down I'm planning on using serverless tools where possible.
+GCP is decent for data tooling, I'm using it extensively in this project. 
 
-- Cloud Storage to keep copies of the raw segment data
-- Secret manager for storing API keys etc
-- Run/Functions for executing jobs
-- Pub/sub for queues (maybe) 
-- Cloud Scheduler for orchestrating jobs
 - BigQuery for target storage/analysis
+- Cloud Functions for extracting the data
+- Cloud Storage to keep copies of the raw segment data
+- Pub/sub for a queue of all the points to calculate
+- Cloud Scheduler for orchestrating jobs
 - Github Actions for CI
 
 If cost was less important, I'd consider using Cloud Composer (managed Airflow) The tooling I've chosen should scale well, but if the volume of data increased by a few orders of magnitude then I'd look to Dataflow (Apache Beam)

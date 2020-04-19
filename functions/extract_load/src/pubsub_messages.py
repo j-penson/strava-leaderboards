@@ -4,6 +4,7 @@
     JP at 17/04/20
 """
 from google.cloud import pubsub_v1
+import logging
 import json
 import os
 
@@ -24,15 +25,16 @@ def get_message():
     """Get a single message from the PubSub Queue."""
     message_response = subscriber.pull(subscription_path, max_messages=1)
     if len(message_response.received_messages) == 0:
+        logging.warning("no messages received")
         raise NoMessages
 
     received_message = message_response.received_messages[0]
     message_data = json.loads(received_message.message.data)
-    print(f'got message {message_data}')
+    logging.info(f'got message {message_data}')
     return received_message.ack_id, message_data
 
 
 def ack_message(ack_id):
     """Acknowledge a message so it's not redelivered."""
-    print(f'acking {ack_id}')
+    logging.info(f'acking {ack_id}')
     subscriber.acknowledge(subscription_path, [ack_id])
