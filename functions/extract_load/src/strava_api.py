@@ -3,7 +3,7 @@
 :authors
     JP at 17/04/20
 """
-
+import logging
 from stravalib.client import Client
 
 
@@ -30,7 +30,7 @@ def get_filename(activity_type: str, coordinates: list, grid: bool, lat_steps=No
         filename += f'_{lat_steps}_{lon_steps}'
 
     filename += '.json'
-    print(f'filename is {filename}')
+    logging.info(f'filename is {filename}')
     return filename
 
 
@@ -66,7 +66,7 @@ def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
     if sw_lat > ne_lat or sw_lon > ne_lon:
         raise DodgyCoordinates
 
-    print(f'getting data for {coordinates}')
+    logging.info(f'getting data for {coordinates}')
 
     client = Client(access_token=api_key)
 
@@ -74,16 +74,16 @@ def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
     filename = get_filename(activity, coordinates, grid=False)
 
     segments = client.explore_segments(bounds=coordinates, activity_type=activity)
-    print(f'got {len(segments)} segments')
+    logging.info(f'got {len(segments)} segments')
 
     if len(segments) == 0:
-        print("no segments found")
+        logging.info("no segments found")
         raise NoSegmentsFound
 
     segments_list = [segment_item.segment.to_dict() for segment_item in segments]
-    print(f'segments are {segments_list}')
+    logging.info(f'segments are {segments_list}')
 
     leaderboard_list = get_leaderboard_data(segments)
-    print(f'leaderboard for segments are {leaderboard_list}')
+    logging.info(f'leaderboard for segments are {leaderboard_list}')
 
     return segments_list, leaderboard_list, filename

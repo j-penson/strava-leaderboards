@@ -3,6 +3,7 @@
 :authors
     JP at 17/04/20
 """
+import logging
 import pandas as pd
 import os
 
@@ -30,7 +31,7 @@ def write_df(df, table):
     df.to_gbq(table,
               project_id=os.environ['GCP_PROJECT'],
               if_exists='append')
-    print(f'written {len(df)} rows to {table}')
+    logging.info(f'written {len(df)} rows to {table}')
 
 
 def write_to_bq(segments_list, leaderboard_list):

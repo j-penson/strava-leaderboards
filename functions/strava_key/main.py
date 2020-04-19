@@ -24,7 +24,6 @@ def refresh_key(event, context):
     for doc in collection.stream():
         data = doc.to_dict()
         logging.info(f'got key {doc.id}')
-        logging.warning(f'got key {doc.id}')
 
         if time.time() < data['expires_at']:
             logging.info(f'expiry time {data["expires_at"]} not greater than current {time.time()}')

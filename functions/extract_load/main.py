@@ -4,6 +4,7 @@
     JP at 17/04/20
 """
 from google.cloud import firestore
+import logging
 from src import pubsub_messages
 from src import strava_api
 from src import write_to_storage
@@ -20,27 +21,38 @@ def get_strava_data(event, context):
         data = doc.to_dict()
         api_key = data['access_token']
 
-        print(f'starting get_strava_data for {doc.id}')
+        logging.info(f'starting get_strava_data for {doc.id}')
 
         ack_id, message_data = pubsub_messages.get_message()
 
-        try:
-            # Get Strava data for the coordinates using the client
-            segments_list, leaderboard_list, filename = strava_api.get_strava_data(**message_data, api_key=api_key)
+        api_call_count = 0
 
-            # Write the JSON data to GCS
-            write_to_storage.upload_blob_from_string(data=segments_list, filename=filename, file_type='segments')
-            write_to_storage.upload_blob_from_string(data=leaderboard_list, filename=filename, file_type='leaderboard')
+        # Get segments until 40 API calls have been made
+        while api_call_count < 40:
 
-            # Write the BigQuery staging tables
-            bigquery.write_to_bq(segments_list, leaderboard_list)
+            try:
+                # Get Strava data for the coordinates using the client
+                segments_list, leaderboard_list, filename = strava_api.get_strava_data(**message_data, api_key=api_key)
 
-            # Finally acknowledge the message
-            pubsub_messages.ack_message(ack_id)
+                api_call_count += (1 + len(segments_list) + len(leaderboard_list))
+                logging.info(f'api call count for {doc.id} is {api_call_count}')
 
-        # If no segments have been found for those coordinates, still acknowledge the message
-        except strava_api.NoSegmentsFound:
-            pubsub_messages.ack_message(ack_id)
+                # Write the JSON data to GCS
+                write_to_storage.upload_blob_from_string(data=segments_list, filename=filename, file_type='segments')
+                write_to_storage.upload_blob_from_string(data=leaderboard_list, filename=filename, file_type='leaderboard')
 
-        except Exception as e:
-            print(f'error with {doc.id} {e}')
+                # Write the BigQuery staging tables
+                bigquery.write_to_bq(segments_list, leaderboard_list)
+
+                # Finally acknowledge the message
+                pubsub_messages.ack_message(ack_id)
+
+            # If no segments have been found for those coordinates, still acknowledge the message
+            except strava_api.NoSegmentsFound:
+                api_call_count += 1
+                logging.warning(f'no segments found for {data} call count {api_call_count}')
+                pubsub_messages.ack_message(ack_id)
+
+            except Exception as e:
+                logging.error(f'error with {doc.id}: {data} {e}')
+                logging.error(f'error with {doc.id}: {e}')

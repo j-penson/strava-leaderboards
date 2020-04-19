@@ -4,6 +4,7 @@
     JP at 17/04/20
 """
 from google.cloud import storage
+import logging
 import json
 import os
 
@@ -15,14 +16,14 @@ def upload_blob_from_file(filepath: str, filename: str, file_type: str):
     """Upload a file to GCS."""
     blob = bucket.blob(os.path.join(file_type, filename))
     blob.upload_from_filename(os.path.join(filepath, filename))
-    print(f'{file_type} file {filename} uploaded file_name')
+    logging.info(f'{file_type} file {filename} uploaded file_name')
 
 
 def upload_blob_from_string(data, filename: str, file_type: str):
     """Upload to GCS from a string."""
     blob = bucket.blob(os.path.join(file_type, filename))
     blob.upload_from_string(json.dumps(data), content_type='application/json')
-    print(f'{file_type} file {filename} uploaded file_name')
+    logging.info(f'{file_type} file {filename} uploaded file_name')
 
 
 def write_to_local(local_dir: str, file_type: str, filename: str, data):
