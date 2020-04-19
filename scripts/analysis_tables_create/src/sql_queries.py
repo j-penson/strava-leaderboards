@@ -42,5 +42,20 @@ create table analysis.segments(
     athlete_pr_effort FLOAT64)
 """
 
+create_leaderboard = """
+create table analysis.leaderboard(
+    leaderboard_id STRING NOT NULL,
+    segment_id STRING NOT NULL,
+    elapsed_time STRING NOT NULL,
+    moving_time STRING,
+    start_date STRING,
+    rank INT64 NOT NULL,
+);
+
+
+
+
+"""
+
 drop_queries = [drop_segments, drop_leaderboard]
-create_queries = [create_segments]
+create_queries = [create_segments, create_leaderboard]
