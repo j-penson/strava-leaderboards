@@ -4,8 +4,10 @@
     JP at 17/04/20
 """
 from google.cloud import firestore
+import logging
 import requests
 import time
+
 
 db = firestore.Client()
 collection = db.collection('strava')
@@ -21,13 +23,14 @@ def refresh_key(event, context):
     """Triggered from a message on a Cloud Pub/Sub topic. Update Strava keys stored in Firestore."""
     for doc in collection.stream():
         data = doc.to_dict()
-        print(f'got key {doc.id}')
+        logging.info(f'got key {doc.id}')
+        logging.warning(f'got key {doc.id}')
 
         if time.time() < data['expires_at']:
-            print(f'expiry time {data["expires_at"]} not greater than current {time.time()}')
+            logging.info(f'expiry time {data["expires_at"]} not greater than current {time.time()}')
             continue
         else:
-            print(f'expiry time {data["expires_at"]} greater than current so getting a new access token')
+            logging.info(f'expiry time {data["expires_at"]} greater than current so getting a new access token')
 
         request_params = {'client_id': data['client_id'],
                           "client_secret": data['client_secret'],
@@ -36,9 +39,10 @@ def refresh_key(event, context):
 
         response = requests.post("https://www.strava.com/api/v3/oauth/token", params=request_params)
 
-        print(f'made request to Strava and got response code {response.status_code}')
+        logging.info(f'made request to Strava and got response code {response.status_code}')
 
         if response.status_code != 200:
+            logging.error(f'Bad request {response.status_code} content {response.text}')
             raise RefreshTokenBadRequest
 
         response_dict = response.json()
@@ -49,4 +53,4 @@ def refresh_key(event, context):
                            'refresh_token': response_dict['refresh_token'],
                            'expires_at': response_dict['expires_at']})
 
-        print(f'updated {doc.id} with new expiry time {response_dict["expires_at"]}')
+        logging.info(f'updated {doc.id} with new expiry time {response_dict["expires_at"]}')
