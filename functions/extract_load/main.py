@@ -48,6 +48,10 @@ def get_strava_data(event, context):
                 pubsub_messages.ack_message(ack_id)
 
             # If no segments have been found for those coordinates, still acknowledge the message
+            except strava_api.RateLimitExceeded:
+                logging.warning(f'rate limit exceeded for {doc.id}')
+                break
+
             except strava_api.NoSegmentsFound:
                 api_call_count += 1
                 logging.warning(f'no segments found for {message_data} call count {api_call_count}')
