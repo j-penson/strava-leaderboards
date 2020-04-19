@@ -1,9 +1,4 @@
 name: Google Cloud Function Deployment
-#on:
-#  push:
-#    branches:
-#      - 'master'
-
 on: [push]
 
 jobs:
