@@ -22,6 +22,8 @@ Strava has a great API that allows users to search for segments in a particular 
 5. `scripts/analysis_tables_create`: create the analysis tables in BigQuery
 6. `scripts/analysis_tables_load`: load from the staging tables to the analysis tables in BigQuery
  
+ ![Architecture Diagram](./scripts/generate_arch_diagram/strava_leaderboard_architecture_diagram.png)
+ 
  ## Data Model
 
 
