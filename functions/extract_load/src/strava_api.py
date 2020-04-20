@@ -70,6 +70,7 @@ def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
     coordinates = [sw_lat, sw_lon, ne_lat, ne_lon]
 
     if sw_lat > ne_lat or sw_lon > ne_lon:
+        logging.error(f'Bad coordinates lat: {sw_lat, ne_lat} lon: {sw_lon, ne_lon}')
         raise DodgyCoordinates
 
     logging.info(f'getting data for {coordinates}')
