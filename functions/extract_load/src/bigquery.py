@@ -29,7 +29,7 @@ LEADERBOARD_DTYPES = {'athlete_name': 'str', 'elapsed_time': 'str', 'moving_time
 
 def write_df(df, table):
     """Write a dataframe to a table in append mode."""
-    df['insert_date'] = datetime.datetime.now()
+    df['insert_date'] = str(datetime.datetime.now())
     df.to_gbq(table,
               project_id=os.environ['GCP_PROJECT'],
               if_exists='append')
