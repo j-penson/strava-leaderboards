@@ -46,10 +46,12 @@ create_leaderboard = """
 create table analysis.leaderboard(
     leaderboard_id STRING NOT NULL,
     segment_id STRING NOT NULL,
-    elapsed_time STRING NOT NULL,
-    moving_time STRING,
-    start_date STRING,
-    rank INT64 NOT NULL,
+    elapsed_time TIME,
+    elapsed_time_seconds INT64,
+    segment_distance FLOAT64,
+    speed_ms FLOAT64,
+    start_date TIMESTAMP,
+    rank INT64 NOT NULL
 );
 
 

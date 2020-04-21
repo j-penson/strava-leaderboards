@@ -78,25 +78,35 @@ GROUP BY stg_s.name,
 
 load_leaderboard = """
 INSERT INTO analysis.leaderboard
+SELECT leaderboard_id,
+        segment_id,
+        elapsed_time,
+        TIME_DIFF(elapsed_time, TIME(0,0,0), SECOND) elapsed_time_seconds,
+        segment_distance,
+        ROUND(segment_distance/TIME_DIFF(elapsed_time, TIME(0,0,0), SECOND),2) speed_ms,
+        start_date,
+        rank
+FROM (
 SELECT CONCAT(an_s.segment_id, "_", stg_l.rank) leaderboard_id,
-an_s.segment_id,
-stg_l.elapsed_time,
-stg_l.moving_time,
-MIN(stg_l.start_date),
-stg_l.rank
-FROM staging.leaderboard stg_l
-JOIN analysis.segments an_s
-    ON stg_l.segment_name = an_s.name
-    AND stg_l.segment_distance = an_s.distance
-    AND stg_l.segment_start_latlng = an_s.start_latlng
-LEFT JOIN analysis.leaderboard an_l
-    ON CONCAT(an_s.segment_id, stg_l.rank) = an_l.leaderboard_id
-WHERE an_l.leaderboard_id IS NULL
-GROUP BY an_s.segment_id,
-stg_l.elapsed_time,
-stg_l.moving_time,
-stg_l.rank
+        an_s.segment_id,
+        MIN(CAST(stg_l.elapsed_time AS TIME)) elapsed_time,
+        stg_l.segment_distance,
+        MIN(CAST(stg_l.start_date AS TIMESTAMP)) start_date,
+        stg_l.rank
+        FROM staging.leaderboard stg_l
+        JOIN analysis.segments an_s
+            ON stg_l.segment_name = an_s.name
+            AND stg_l.segment_distance = an_s.distance
+            AND stg_l.segment_start_latlng = an_s.start_latlng
+        LEFT JOIN analysis.leaderboard an_l
+            ON CONCAT(an_s.segment_id, "_", stg_l.rank) = an_l.leaderboard_id
+        WHERE an_l.leaderboard_id IS NULL
+        GROUP BY an_s.segment_id,
+        stg_l.rank,
+        stg_l.segment_distance)
 """
 
 
-load_queries = [load_segments, load_leaderboard]
+
+load_queries = [(load_segments, 'analysis.segments'), (load_leaderboard, 'analysis.leaderboard')]
+
