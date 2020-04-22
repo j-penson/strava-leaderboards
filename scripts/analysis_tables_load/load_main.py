@@ -20,7 +20,7 @@ def execute_load_query(sql_query):
 
 
 def get_count(table):
-    """Get a row count for the table"""
+    """Get a row count for the table."""
     count_job = client.query(f'SELECT COUNT(*) row_count FROM {table}')
     result = count_job.result()
     for row in result:
@@ -28,7 +28,7 @@ def get_count(table):
 
 
 def delete_from_table(table):
-    """Delete all rows from a table"""
+    """Delete all rows from a table."""
     # Check we're deleting the anlaysis tables and not the staging tables as they'll be time consumng to load
     if 'staging' in table:
         raise ValueError

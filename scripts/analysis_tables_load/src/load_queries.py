@@ -117,8 +117,8 @@ SELECT day start_date,
         EXTRACT(QUARTER FROM day) quarter,
         CONCAT(EXTRACT(year FROM day), "-", EXTRACT(month FROM day)) year_month
 FROM UNNEST(
-    GENERATE_DATE_ARRAY((SELECT CAST(MIN(start_date) AS DATE) FROM analysis.fact_leaderboard), 
-                        (SELECT CAST(MAX(start_date) AS DATE) FROM analysis.fact_leaderboard), 
+    GENERATE_DATE_ARRAY((SELECT CAST(MIN(start_date) AS DATE) FROM analysis.fact_leaderboard),
+                        (SELECT CAST(MAX(start_date) AS DATE) FROM analysis.fact_leaderboard),
                         INTERVAL 1 DAY)
 ) AS day
 """
@@ -128,4 +128,3 @@ FROM UNNEST(
 load_queries = [(load_segments, 'analysis.dim_segment', False),
                 (load_leaderboard, 'analysis.fact_leaderboard', False),
                 (load_times, 'analysis.dim_start_time', True)]
-
