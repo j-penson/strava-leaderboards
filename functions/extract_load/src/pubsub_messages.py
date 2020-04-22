@@ -36,5 +36,5 @@ def get_message():
 
 def ack_message(ack_id):
     """Acknowledge a message so it's not redelivered."""
-    logging.info(f'acking {ack_id}')
-    subscriber.acknowledge(subscription_path, [ack_id])
+    logging.info(f'acking {subscription_path}, {ack_id}')
+    subscriber.acknowledge(subscription=subscription_path, ack_ids=[ack_id])

@@ -10,19 +10,19 @@ import stravalib
 class DodgyCoordinates(Exception):
     """Exception to fail coordinate checks."""
 
-    logging.error('Coordinates haven''t been calculated correctly - either lat or long is wrong way around')
+    pass
 
 
 class NoSegmentsFound(Exception):
     """Exception when Strava doesn't find anything."""
 
-    logging.info('No segments found for these coordiates')
+    pass
 
 
 class RateLimitExceeded(Exception):
     """Exception when Strava has exceeded the rate limit."""
 
-    logging.error('Rate limit exceeded')
+    pass
 
 
 def get_filename(activity_type: str, coordinates: list, grid: bool, lat_steps=None, lon_steps=None):
@@ -70,6 +70,7 @@ def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
     coordinates = [sw_lat, sw_lon, ne_lat, ne_lon]
 
     if sw_lat > ne_lat or sw_lon > ne_lon:
+        logging.error(f'Bad coordinates lat: {sw_lat, ne_lat} lon: {sw_lon, ne_lon}')
         raise DodgyCoordinates
 
     logging.info(f'getting data for {coordinates}')
@@ -83,11 +84,13 @@ def get_strava_data(sw_lat, sw_lon, ne_lat, ne_lon, activity, api_key):
         segments = client.explore_segments(bounds=coordinates, activity_type=activity)
 
     except stravalib.exc.RateLimitExceeded:
+        logging.error('rate limit exceeded')
         raise RateLimitExceeded
 
     logging.info(f'got {len(segments)} segments')
 
     if len(segments) == 0:
+        logging.info(f'no segments found for lat:{sw_lat, ne_lat} lon: {sw_lon, ne_lon}')
         raise NoSegmentsFound
 
     segments_list = [segment_item.segment.to_dict() for segment_item in segments]
