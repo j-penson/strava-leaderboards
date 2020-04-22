@@ -4,11 +4,12 @@
     JP at 19/04/20
 """
 
-drop_segments = "DROP TABLE IF EXISTS analysis.segments"
-drop_leaderboard = "DROP TABLE IF EXISTS analysis.leaderboard"
+drop_segments = "DROP TABLE IF EXISTS analysis.dim_segment"
+drop_leaderboard = "DROP TABLE IF EXISTS analysis.fact_leaderboard"
+drop_start_time = "DROP TABLE IF EXISTS analysis.dim_start_time"
 
 create_segments = """
-create table analysis.segments(
+create table analysis.dim_segment(
     segment_id STRING NOT NULL,
     name STRING NOT NULL,
     activity_type STRING NOT NULL,
@@ -43,21 +44,31 @@ create table analysis.segments(
 """
 
 create_leaderboard = """
-create table analysis.leaderboard(
+create table analysis.fact_leaderboard(
     leaderboard_id STRING NOT NULL,
     segment_id STRING NOT NULL,
     elapsed_time TIME,
     elapsed_time_seconds INT64,
-    segment_distance FLOAT64,
+    segment_distance_m FLOAT64,
     speed_ms FLOAT64,
+    speed_kph FLOAT64,
     start_date TIMESTAMP,
     rank INT64 NOT NULL
 );
-
-
-
-
 """
 
-drop_queries = [drop_segments, drop_leaderboard]
-create_queries = [create_segments, create_leaderboard]
+create_start_time = """
+create table analysis.dim_start_time
+(
+    start_date DATE,
+    year INT64,
+    month INT64,
+    day INT64,
+    week_of_year INT64,
+    quarter INT64,
+    year_month STRING
+);
+"""
+
+drop_queries = [drop_segments, drop_leaderboard, drop_start_time]
+create_queries = [create_segments, create_leaderboard, create_start_time]
