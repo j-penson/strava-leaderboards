@@ -22,19 +22,21 @@ Strava has a great API that allows users to search for segments in a particular 
 5. `scripts/analysis_tables_create`: create the analysis tables in BigQuery
 6. `scripts/analysis_tables_load`: load from the staging tables to the analysis tables in BigQuery
  
+## Data Model
+
+The data model contains a single fact table of segment leaderboard times:
+
+- Fact table: leaderboard entries
+- Dimensions:
+    - Segment
+    - Location
+    - Time and date
+
+ ### Architecture 
+ The data pipeline's architecture.
+ 
  ![Architecture Diagram](./scripts/generate_arch_diagram/strava_leaderboard_architecture_diagram.png)
  
- ## Data Model
-
-
-The core of the data model I'm looking to create is as follows:
-
-- Segment times (leaderboards)
-- Segment information 
-- Locations - coordinates
-
-This can then be joined to other information, such as weather data for analysis.
-
 
 ## Infrastructure/Tooling
 GCP is decent for data tooling, I'm using it extensively in this project. 
