@@ -51,10 +51,15 @@ GCP is decent for data tooling, I'm using it extensively in this project.
 If cost was less important, I'd consider using Cloud Composer (managed Airflow) The tooling I've chosen should scale well, but if the volume of data increased by a few orders of magnitude then I'd look to Dataflow (Apache Beam)
 
 
-## Scenarios for Udacity Project Rubric (TODO)
+## Scenarios for Udacity Project Rubric
 
 1. Data increased by 100x
+- The tooling choices for this project should scale well - BigQuery and GCS can handle TBs of data, and I could easily scale the function horizontally.
+- I haven't partitioned the data as it stands, but if volume increase by 100x I would probably need to. Either partitioning by date of extract, or location might be a good choice.
 
-2. Pipelines run on a daily basis
+2. Pipelines run on a daily basis at 7pm and populate a dashboard
+- The pipelines to extract Strava data are scheduled hourly, which load the staging tables. The load of analysis tables `scripts/analysis_tables_load` could be scheduled in a similar way usin GCP Functions and Scheduler.
+- A dashboard could be created from the fact and dimension tables as part of this refresh.
 
 3. Database needs to be accessed by 100+ people
+- The GCP project has a single user (me) at the moment, but could be configured to be accessed by other users using the usual tooling.
